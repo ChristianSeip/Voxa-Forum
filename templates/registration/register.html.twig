@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'registration.form.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h1 class="h4 mb-4">{{ 'registration.form.title'|trans }}</h1>
+
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
+
+            {{ form_start(registrationForm) }}
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.username) }}
+                {{ form_widget(registrationForm.username, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.username) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword) }}
+                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-check mb-4">
+                {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
+                {{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'form-check-label' }, label_html: true }) }}
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'registration.form.submit_button'|trans }}
+                </button>
+            </div>
+
+            {{ form_end(registrationForm) }}
+
+            <hr class="my-4">
+            <p class="mb-0">
+                <a href="{{ path('app_forgot_password_request') }}" class="link-secondary">
+                    {{ 'registration.form.forgot_password'|trans }}
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
+

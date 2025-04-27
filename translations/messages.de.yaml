@@ -1,0 +1,367 @@
+site:
+  title: "Forum"
+  name: "🧩 Voxa"
+menu:
+  toggle: "Menü öffnen"
+  close: "Schließen"
+  title: "Menü"
+  forums: "Foren"
+  members: "Mitglieder"
+  login: "Anmelden"
+  register: "Registrieren"
+  logout: "Abmelden"
+  profile: "Profil anzeigen"
+  profile_edit: "Profil bearbeiten"
+  preferences: "Einstellungen"
+  hello: "Hallo, %username%"
+  acp:
+    title: 'Verwaltung'
+    roles: "Rollen verwalten"
+    users: "Benutzer verwalten"
+    forums: "Foren verwalten"
+  search:
+    title: 'Suche'
+    input_placeholder: "Suchbegriff eingeben..."
+    input_label: "Suche"
+    button: "Suchen"
+footer:
+  terms: "Nutzungsbedingungen"
+  imprint: "Impressum"
+  privacy: "Datenschutz"
+  copyright: "Copyright 2025 Seip.io. Alle Rechte vorbehalten."
+registration:
+  success: "Bitte bestätige deine E-Mail-Adresse, um dein Konto zu aktivieren."
+  mail_subject: "Bestätige deine Registrierung"
+  confirmed: "Deine E-Mail-Adresse wurde erfolgreich bestätigt."
+  already_confirmed: "Diese E-Mail wurde bereits bestätigt."
+  error: "Die Bestätigung ist fehlgeschlagen. Bitte fordere einen neuen Link an."
+  form:
+    title: "Registrierung"
+    forgot_password: "Passwort vergessen?"
+    submit_button: "Registrieren"
+    label:
+      mail: "E-Mail"
+      username: "Benutzername"
+      password: "Passwort"
+      terms: 'Ich akzeptiere die <a href="/terms" target="_blank">AGB</a>.'
+login:
+  title: "Anmeldung"
+  heading: "Bitte melde dich an"
+  username: "Benutzername"
+  password: "Passwort"
+  remember_me: "Angemeldet bleiben"
+  submit: "Anmelden"
+  forgot_password: "Passwort vergessen?"
+  already_logged_in: "Du bist bereits als %username% angemeldet"
+  logout: "Abmelden"
+email:
+  confirmation:
+    heading: "Hallo!"
+    text: "Bitte bestätige deine E-Mail-Adresse durch einen Klick auf folgenden Link:"
+    cta: "E-Mail bestätigen"
+    expiry_notice: "Dieser Link ist gültig bis {{ expiresAt }}."
+    signature: "-Dein Forumsteam"
+password_reset:
+  request_title: "Passwort zurücksetzen"
+  request_help: "Gib deine E-Mail-Adresse ein. Wir senden dir einen Link, mit dem du dein Passwort zurücksetzen kannst."
+  send_button: "Link Anfordern"
+  reset_button: "Passwort zurücksetzen"
+  change_title: "Passwort ändern"
+  check_email:
+    title: "Passwort-Zurücksetzen"
+    message: "Falls ein Konto mit deiner E-Mail existiert, wurde dir soeben eine Nachricht mit dem Link zum Zurücksetzen gesendet."
+    not_received: "Wenn du keine E-Mail erhalten hast, überprüfe deinen Spam-Ordner oder"
+    retry: "versuche es erneut"
+  email:
+    greeting: "Hallo!"
+    body: "Um dein Passwort zurückzusetzen, klicke bitte auf folgenden Link:"
+    closing: "Viele Grüße!"
+    cta: "Passwort zurücksetzen"
+    expiration: "Dieser Link ist gültig bis"
+profile:
+  preferences:
+    title: "Einstellungen"
+    save: "Speichern"
+    saved: "Deine Einstellungen wurden gespeichert."
+    language: "Sprache"
+    timezone: "Zeitzone"
+    show_email: "E-Mail öffentlich anzeigen"
+    show_gender: "Geschlecht öffentlich anzeigen"
+    show_birth_date: "Geburtsdatum öffentlich anzeigen"
+    privacy: "Privatsphäre"
+  edit:
+    title: "Profil bearbeiten"
+    personal_data: "Persönliche Informationen"
+    save: "Speichern"
+    account_data: "Account Daten"
+  form:
+    email: "E-Mail-Adresse"
+    new_password: "Neues Passwort"
+    real_name: "Name"
+    gender: "Geschlecht"
+    birth_date: "Geburtsdatum"
+    location: "Wohnort"
+  gender:
+    male: "Männlich"
+    female: "Weiblich"
+    divers: "Divers"
+    none: "Keins"
+  updated: "Dein Profil wurde erfolgreich aktualisiert."
+  user_profile:
+    title: "Profil"
+    display_name: "Name"
+    email: "E-Mail"
+    gender: "Geschlecht"
+    birth_date: "Geburtsdatum"
+    location: "Wohnort"
+    hidden: "Versteckt"
+    edit_own: "Profil bearbeiten"
+    posts: "Beiträge"
+    groups: "Gruppen"
+    joined: "Beigetreten"
+  not_found_exception: "Der Benutzer existiert nicht"
+forum:
+  title: "Forum"
+  heading:
+    category_overview: "Kategorien"
+    forum_overview: "Foren"
+  no_forums: "Keine sichtbaren Foren in dieser Kategorie."
+  no_categories: "Es sind keine Kategorien verfügbar."
+  forums: "Foren"
+  subforums: "Unterforen"
+  topics: "Themen"
+  no_topics: "Es wurden noch keine Themen erstellt."
+  moderators: "Moderatoren:"
+  posts: "Beiträge"
+  last_post: "Letzter Beitrag"
+  created_by: "von"
+  created_at: "am"
+  new_topic: "Neues Thema"
+  topic:
+    created_by: "von"
+    posts: "Beiträge"
+    views: "Aufrufe"
+    last_post: "Letzter Beitrag"
+  access_denied: "Du hast keine Berechtigung, dieses Forum zu sehen."
+  create_denied: "Du hast keine Berechtigung, um einen Beitrag zu schreiben."
+post:
+  edit_notice: "Bearbeitet von %username% (%timestamp%)."
+  deleted_message: "Dieser Beitrag wurde gelöscht durch %username%."
+  editor:
+    content: "Nachricht"
+    title:
+      default: "Beitrag"
+    heading:
+      default: "Beitrag"
+    submit:
+      default: "Speichern"
+  reply:
+    title: "Antwort erstellen"
+    heading: "Antwort auf '%topic%'"
+    submit: "Antworten"
+    denied: "Du darfst in diesem Forum keine Beiträge erstellen."
+  edit:
+    title: "Beitrag bearbeiten"
+    heading: "Beitrag bearbeiten"
+    submit: "Änderungen speichern"
+    denied: "Du kannst diesen Beitrag nicht bearbeiten."
+  delete:
+    denied: "Du kannst diesen Beitrag nicht löschen."
+    success: "Der Beitrag wurde gelöscht."
+    confirm: "Möchtest du diesen Beitrag wirklich löschen?"
+  quote:
+    title: "Beitrag zitieren"
+    heading: "Zitat verfassen"
+    submit: "Zitieren"
+  buttons:
+    edit: "Bearbeiten"
+    reply: "Antworten"
+    delete: "Löschen"
+    quote: "Zitieren"
+topic:
+  create:
+    title: "Thema erstellen"
+    heading: "Neues Thema erstellen"
+    submit: "Thema erstellen"
+  form:
+    title: "Titel"
+    message: "Nachricht"
+    title_required: "Bitte gib einen Titel ein."
+    message_required: "Bitte gib eine Nachricht ein."
+    sticky_status: "Angepinnt"
+    is_closed: "Thema geschlossen"
+  edit:
+    title: "Thema bearbeiten"
+    heading: "Thema bearbeiten"
+    submit: "Änderungen speichern"
+    success: "Das Thema wurde erfolgreich aktualisiert."
+    denied: "Du hast keine Berechtigung, dieses Thema zu bearbeiten."
+  delete:
+    confirm: "Bist du sicher, dass du dieses Thema löschen möchtest?"
+    success: "Thema wurde erfolgreich gelöscht."
+    denied: "Du darfst dieses Thema nicht löschen."
+    title: "Thema löschen"
+    button: "Löschen"
+deleted_username: "Gelöschter Nutzer"
+sticky:
+  none: "Normal"
+  important: "Wichtig"
+  global: "Ankündigung"
+search:
+  results: "Suchergebnisse"
+  query: "Suchbegriff"
+  no_results: "Keine passenden Ergebnisse gefunden."
+  query_too_short: "Der Suchbegriff ist zu kurz. Bitte mindestens 3 Zeichen eingeben."
+  result_type_post: "Beitrag"
+  result_type_topic: "Thema"
+  input_placeholder: "Suche nach Beiträgen"
+  button: "Suchen"
+  advanced_filters: "Erweiterte Filter"
+  mode: "Suchmodus"
+  mode.text: "Beiträge mit Stichwort"
+  mode.user: "Beiträge von Benutzer"
+  author: "Benutzername"
+  days: "Zeitraum"
+  days.all: "Alle"
+  days.1: "Letzter Tag"
+  days.7: "Letzte 7 Tage"
+  days.30: "Letzter Monat"
+  days.365: "Letztes Jahr"
+  forums: "Foren"
+  hint:
+    forum_multiple: "Mehrfachauswahl möglich"
+  access_denied: "Du hast keine Berechtigung, um die Suchfunktion zu nutzen"
+permission:
+  can_see_forum: "Kann Forum sehen"
+  can_view_forum: "Kann Beiträge in Forum sehen und lesen"
+  can_create_topic: "Kann neue Themen erstellen"
+  can_reply_topic: "Kann Beiträge schreiben"
+  can_edit_own_post: "Kann eigene Beiträge bearbeiten"
+  edit_own_post_timer: "Bearbeitungszeit (Minuten)"
+  can_delete_own_post: "Kann eigene Beiträge löschen"
+  can_use_search: "Kann Suchfunktion benutzen"
+  can_edit_topic: "Kann Themen bearbeiten"
+  can_delete_topic: "Kann Themen löschen"
+  can_edit_post: "Kann Beiträge bearbeiten"
+  can_delete_post: "Kann Beiträge löschen"
+  can_bypass_privacy: "Kann private Nutzerdaten sehen"
+  can_ban_user: "Kann Nutzer sperren"
+  can_edit_user: "Kann Nutzer bearbeiten"
+  can_delete_user: "Kann Nutzer löschen"
+  can_access_acp: "Kann Adminbereich betreten"
+  can_create_forum: "Kann Foren erstellen"
+  can_edit_forum: "Kann Foren bearbeiten"
+  can_delete_forum: "Kann Foren löschen"
+  can_create_role: "Kann Rollen erstellen"
+  can_edit_role: "Kann Rollen bearbeiten"
+  can_delete_role: "Kann Rollen löschen"
+admin:
+  save: "Speichern"
+  role:
+    name: 'Name'
+    description: "Beschreibung"
+    style: "CSS Klasse"
+    index:
+      title: "Rollen verwalten"
+      heading: "Rollenübersicht"
+      create_button: "Neue Rolle anlegen"
+      edit_button: "Bearbeiten"
+      delete_button: "Löschen"
+      delete_confirm: "Wirklich löschen?"
+      delete_disabled_title: "Systemrolle kann nicht gelöscht werden"
+    edit:
+      title: "Rollen Editor"
+      heading: "Rollen Editor"
+      permissions: "Rechte"
+      permissions_admin: "Administrative Rechte"
+      permissions_standard: "Benutzerrechte"
+      success: "Rolle aktualisiert"
+    delete:
+      not_allowed: "Diese Rolle kann nicht gelöscht werden."
+      success: "Rolle erfolgreich gelöscht."
+  user:
+    index:
+      title: "Benutzerverwaltung"
+      heading: "Benutzerübersicht"
+      search_placeholder: "Benutzernamen oder E-Mail suchen..."
+      search_button: "Suchen"
+      empty: "Es wurden keine Benutzer gefunden."
+      create_button: "Neuer Benutzer"
+    delete:
+      confirm: "Soll dieser Benutzer wirklich gelöscht werden?"
+      success: "Der Benutzer wurde erfolgreich anonymisiert."
+      guest_blocked: "Der Gast-Benutzer kann nicht gelöscht werden."
+    edit:
+      username: "Benutzername"
+      email: "E-Mail-Adresse"
+      active: "Benutzer ist aktiv"
+      roles: "Rollen"
+      title: "Benutzer Editor"
+      heading: "Benutzer Editor"
+      success: "Benutzer wurde erfolgreich gespeichert."
+      forbidden: "Der Gastnutzer darf nicht bearbeitet werden."
+      tab:
+        main: "Allgemein"
+        profile: "Profil"
+        settings: "Einstellungen"
+  forum:
+    index:
+      title: "Forenverwaltung"
+      heading: "Foren verwalten"
+      create_button: "Neues Forum"
+    edit:
+      title_edit: "Forum Editor"
+      heading_edit: "Forum Editor"
+      name: "Titel"
+      description: "Beschreibung"
+      parent: "Übergeordnetes Forum"
+      position: "Position"
+      hide: "Forum ausblenden"
+      moderators: "Moderatoren"
+      success: "Forum-Einstellungen wurden gespeichert."
+      unknown_user: "Benutzer nicht gefunden"
+      select_role: "Benutzerrolle"
+      tab:
+        main: "Allgemein"
+        moderators: "Moderatoren"
+        permissions: "Rechte"
+      placeholder:
+        moderators: "Moderatoren können später über dieses Formular hinzugefügt werden."
+        permissions: "Die Rechtevergabe erfolgt nach Gruppen. Diese Sektion folgt noch."
+    delete:
+      confirm: "Möchtest du dieses Forum wirklich löschen?"
+      success: "Forum wurde erfolgreich gelöscht."
+access_denied: "Du hast nicht die Berechtigung, um diese Seite aufzurufen."
+missing_permission: "Du hast nicht die nötigen Rechte für diese Funktion."
+username: "Benutzername"
+mail: "E-Mail"
+active: "Aktiv"
+actions: "Aktionen"
+edit: "Bearbeiten"
+delete: "Löschen"
+yes: "Ja"
+no: "Nein"
+terms.title: "Nutzungsbedingungen"
+terms.content: "
+  <h1>Nutzungsbedingungen</h1>
+  <p>Willkommen in unserem Forum! Mit der Nutzung dieses Forums erklärst du dich mit den folgenden Regeln einverstanden.</p>
+  
+  <h2>1. Allgemeines Verhalten</h2>
+  <p>Behandle andere Mitglieder respektvoll. Persönliche Angriffe, Beleidigungen, Diskriminierungen oder Belästigungen werden nicht toleriert.</p>
+  
+  <h2>2. Inhalte</h2>
+  <p>Veröffentliche keine illegalen, beleidigenden, gewaltverherrlichenden oder anderweitig unangemessenen Inhalte. Inhalte, die gegen geltendes Recht verstoßen, sind untersagt.</p>
+  
+  <h2>3. Verantwortlichkeit</h2>
+  <p>Du bist für alle Inhalte verantwortlich, die du veröffentlichst. Beiträge spiegeln nicht zwangsläufig die Meinung des Betreibers wider.</p>
+  
+  <h2>4. Datenschutz</h2>
+  <p>Persönliche Daten anderer Mitglieder dürfen nicht ohne deren ausdrückliche Zustimmung veröffentlicht werden.</p>
+  
+  <h2>5. Konsequenzen bei Verstößen</h2>
+  <p>Verstöße gegen diese Regeln können zu Verwarnungen, temporären Sperren oder einem dauerhaften Ausschluss führen.</p>
+  
+  <h2>6. Änderungen</h2>
+  <p>Die Nutzungsbedingungen können jederzeit geändert werden. Nutzer werden über wesentliche Änderungen informiert.</p>
+  
+  <p><strong>Durch die Nutzung des Forums bestätigst du, diese Regeln gelesen und akzeptiert zu haben.</strong></p>"

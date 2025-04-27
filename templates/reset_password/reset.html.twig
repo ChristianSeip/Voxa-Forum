@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'password_reset.request_title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h1 class="h4 mb-4">{{ 'password_reset.change_title'|trans }}</h1>
+
+            {{ form_start(resetForm) }}
+
+            <div class="mb-3">
+                {{ form_label(resetForm.plainPassword.first) }}
+                {{ form_widget(resetForm.plainPassword.first, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(resetForm.plainPassword.first) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(resetForm.plainPassword.second) }}
+                {{ form_widget(resetForm.plainPassword.second, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(resetForm.plainPassword.second) }}
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-primary">{{ 'password_reset.reset_button'|trans }}</button>
+            </div>
+
+            {{ form_end(resetForm) }}
+
+        </div>
+    </div>
+{% endblock %}

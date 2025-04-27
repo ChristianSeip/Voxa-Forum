@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="{{ app.user.locale ?? app.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ 'site.title'|trans }}{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/vendor/fontawesome/css/all.min.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header class="bg-dark text-white py-3 position-relative">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="/" class="text-white text-decoration-none h4 mb-0">{{ 'site.name'|trans }}</a>
+
+        <button class="btn btn-outline-light d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-label="{{ 'menu.toggle'|trans }}">
+            ☰
+        </button>
+
+        <div class="d-none d-md-flex align-items-center gap-4">
+            <nav class="d-flex gap-3 me-4">
+                <a href="{{ path('app_forums') }}" class="text-white text-decoration-none">{{ 'menu.forums'|trans }}</a>
+                <a href="{{ path('app_search') }}" class="text-white text-decoration-none">{{ 'menu.search.title'|trans }}</a>
+                {% if has_global_permission('can_access_acp') %}
+                    <div class="dropdown">
+                        <a href="#" class="text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">{{ 'menu.acp.title'|trans }}</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('admin_role_index') }}">{{ 'menu.acp.roles'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_user_index') }}">{{ 'menu.acp.users'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_forum_index') }}">{{ 'menu.acp.forums'|trans }}</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </nav>
+
+            <div>
+                {% if app.user %}
+                    <div class="dropdown">
+                        <a href="#" class="text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            {{ 'menu.hello'|trans({'%username%': app.user.username}) }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_profile_view', { identifier: app.user.username }) }}">{{ 'menu.profile'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}">{{ 'menu.profile_edit'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_profile_preferences') }}">{{ 'menu.preferences'|trans }}</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">{{ 'menu.logout'|trans }}</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm me-2">{{ 'menu.login'|trans }}</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-light btn-sm">{{ 'menu.register'|trans }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <form method="get" action="{{ path('app_search') }}">
+            <div class="input-group">
+                <input type="search" name="q" class="form-control" placeholder="{{ 'menu.search.input_placeholder'|trans }}" aria-label="{{ 'menu.search.input_label'|trans }}">
+                <button class="btn btn-outline-light" type="submit">{{ 'menu.search.button'|trans }}</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="mobileNavLabel">{{ 'menu.title'|trans }}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="{{ 'menu.close'|trans }}"></button>
+        </div>
+        <nav class="offcanvas-body d-flex flex-column gap-4" aria-label="{{ 'menu.title'|trans }}">
+            {% if app.user %}
+                <div>
+                    <p class="mb-2">{{ 'menu.hello'|trans({'%username%': app.user.username}) }}</p>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="{{ path('app_profile_view', { identifier: app.user.username }) }}" class="nav-link text-white">{{ 'menu.profile'|trans }}</a></li>
+                        <li class="nav-item"><a href="{{ path('app_profile_edit') }}" class="nav-link text-white">{{ 'menu.profile_edit'|trans }}</a></li>
+                        <li class="nav-item"><a href="{{ path('app_profile_preferences') }}" class="nav-link text-white">{{ 'menu.preferences'|trans }}</a></li>
+                    </ul>
+                </div>
+
+                {% if has_global_permission('can_access_acp') %}
+                    <div>
+                        <p class="mb-1 text-uppercase small">{{ 'menu.acp.title'|trans }}</p>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a href="{{ path('admin_role_index') }}" class="nav-link text-white">{{ 'menu.acp.roles'|trans }}</a></li>
+                            <li class="nav-item"><a href="{{ path('admin_user_index') }}" class="nav-link text-white">{{ 'menu.acp.users'|trans }}</a></li>
+                            <li class="nav-item"><a href="{{ path('admin_forum_index') }}" class="nav-link text-white">{{ 'menu.acp.forums'|trans }}</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm mt-3">{{ 'menu.logout'|trans }}</a>
+                </div>
+            {% else %}
+                <div>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm me-2">{{ 'menu.login'|trans }}</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-light btn-sm">{{ 'menu.register'|trans }}</a>
+                </div>
+            {% endif %}
+
+            <hr class="border-secondary">
+
+            <ul class="nav flex-column fs-5">
+                <li class="nav-item"><a href="{{ path('app_forums') }}" class="nav-link text-white">{{ 'menu.forums'|trans }}</a></li>
+                <li class="nav-item"><a href="{{ path('app_search') }}" class="nav-link text-white">{{ 'menu.search.title'|trans }}</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<main class="flex-fill py-4">
+    <div class="container" style="max-width: 1200px;">
+        {% block body %}{% endblock %}
+    </div>
+</main>
+
+<footer class="bg-light text-muted py-3 mt-auto">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center small">
+        <div><a href="https://www.seip.io" class="text-muted text-decoration-none">{{ 'footer.copyright'|trans }}</a></div>
+        <div class="d-flex gap-3 mt-2 mt-md-0">
+            <a href="{{ path('app_terms') }}" class="text-muted text-decoration-none">{{ 'footer.terms'|trans }}</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

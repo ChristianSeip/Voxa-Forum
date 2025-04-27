@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'admin.forum.edit.title_edit'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4">{{ 'admin.forum.edit.heading_edit'|trans }}</h1>
+
+            {% for msg in app.flashes('success') %}
+                <div class="alert alert-success mt-3">{{ msg }}</div>
+            {% endfor %}
+
+            <ul class="nav nav-tabs mb-4" id="editForumTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#main"
+                            type="button" role="tab">{{ 'admin.forum.edit.tab.main'|trans }}</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="moderators-tab" data-bs-toggle="tab" data-bs-target="#moderators"
+                            type="button" role="tab">{{ 'admin.forum.edit.tab.moderators'|trans }}</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="permissions-tab" data-bs-toggle="tab" data-bs-target="#permissions"
+                            type="button" role="tab">{{ 'admin.forum.edit.tab.permissions'|trans }}</button>
+                </li>
+            </ul>
+
+            {{ form_start(forumForm) }}
+            <div class="tab-content" id="editForumTabContent">
+                <div class="tab-pane fade show active" id="main" role="tabpanel">
+                    <div class="mb-3">
+                        {{ form_label(forumForm.name) }}
+                        {{ form_widget(forumForm.name, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(forumForm.name) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(forumForm.description) }}
+                        {{ form_widget(forumForm.description, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(forumForm.description) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(forumForm.parent) }}
+                        {{ form_widget(forumForm.parent, { 'attr': { 'class': 'form-select' } }) }}
+                        {{ form_errors(forumForm.parent) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(forumForm.position) }}
+                        {{ form_widget(forumForm.position, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(forumForm.position) }}
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        {{ form_widget(forumForm.isHidden, { 'attr': { 'class': 'form-check-input' } }) }}
+                        {{ form_label(forumForm.isHidden, null, { 'label_attr': { 'class': 'form-check-label' } }) }}
+                        {{ form_errors(forumForm.isHidden) }}
+                    </div>
+                </div>
+
+                {% if forum.id %}
+                <div class="tab-pane fade" id="moderators" role="tabpanel">
+                    <label for="moderator-input" class="form-label">{{ 'admin.forum.edit.moderators'|trans }}</label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="moderator-input" class="form-control" placeholder="Username">
+                        <button type="button" class="btn btn-outline-secondary" id="add-moderator" data-url="{{ path('api_forum_add_moderator', { id: forum.id }) }}">
+                            Hinzufügen
+                        </button>
+                    </div>
+                    <ul id="moderator-list" class="list-group list-group-horizontal flex-wrap">
+                        {% include 'admin/forum/_moderator_list.html.twig' with { forum: forum } %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="tab-pane fade" id="permissions" role="tabpanel">
+                    <div class="mb-3">
+                        <label for="forum-role-select" class="form-label">{{ 'admin.forum.edit.select_role'|trans }}</label>
+                        <select id="forum-role-select" class="form-select">
+                            {% for roleForm in forumForm.forumPermissions %}
+                                {% set roleName = roleForm.vars.data.role.name %}
+                                <option value="role-{{ roleForm.vars.data.role.id }}">{{ roleName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% for roleForm in forumForm.forumPermissions %}
+                        {% set roleId = roleForm.vars.data.role.id %}
+                        <div class="forum-role-permission" id="role-{{ roleId }}">
+                            <h5 class="mt-3">{{ roleForm.vars.data.role.name }}</h5>
+
+                            <div class="row g-2">
+                                {% for field in roleForm %}
+                                    <div class="col-md-4">
+                                        {{ form_label(field) }}
+                                        {{ form_widget(field) }}
+                                        {{ form_errors(field) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-primary">{{ 'admin.save'|trans }}</button>
+            </div>
+            {{ form_end(forumForm) }}
+        </div>
+    </div>
+
+    <script>
+			document.querySelector('#add-moderator')?.addEventListener('click', async () => {
+				const input = document.querySelector('#moderator-input');
+				const url = document.querySelector('#add-moderator').dataset.url;
+				const username = input.value.trim();
+
+				if (!username) return;
+
+				const response = await fetch(url, {
+					method: 'POST',
+					body: JSON.stringify({ username }),
+					headers: {
+						'Content-Type': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest'
+					}
+				});
+
+				if (response.ok) {
+					const html = await response.text();
+					document.querySelector('#moderator-list').innerHTML = html;
+					input.value = '';
+					document.querySelector('#moderator-input').classList.remove('is-invalid');
+					document.querySelector('#moderator-error')?.remove();
+				} else {
+					const data = await response.json();
+					document.querySelector('#moderator-input').classList.add('is-invalid');
+
+					if (!document.querySelector('#moderator-error')) {
+						const errorEl = document.createElement('div');
+						errorEl.id = 'moderator-error';
+						errorEl.className = 'invalid-feedback d-block mt-1';
+						errorEl.innerText = data.error || 'Unknown Error.';
+						input.insertAdjacentElement('afterend', errorEl);
+					}
+				}
+			});
+
+            const roleSelect = document.querySelector('#forum-role-select');
+            const roleContainers = document.querySelectorAll('.forum-role-permission');
+            function updateVisibleRole() {
+                roleContainers.forEach(container => container.style.display = 'none');
+                const selectedId = roleSelect.value;
+                document.querySelector(`#${selectedId}`)?.style?.removeProperty('display');
+            }
+            roleSelect?.addEventListener('change', updateVisibleRole);
+            updateVisibleRole();
+    </script>
+{% endblock %}

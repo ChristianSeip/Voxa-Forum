@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ profileUser.username }} – {{ 'profile.user_profile.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title h4 d-flex align-items-center gap-3">
+                {{ profileUser.username }}
+                {% if isSelf %}
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-sm btn-outline-primary">
+                        {{ 'profile.user_profile.edit_own'|trans }}
+                    </a>
+                {% endif %}
+            </h1>
+
+            <dl class="row mt-4">
+                <dt class="col-sm-4">{{ 'profile.user_profile.display_name'|trans }}</dt>
+                <dd class="col-sm-8">{{ profile.name ?: '—' }}</dd>
+
+                <dt class="col-sm-4">{{ 'profile.user_profile.email'|trans }}</dt>
+                <dd class="col-sm-8">
+                    {% if settings.showEmail or canBypassPrivacy %}
+                        {{ profileUser.email }}
+                    {% else %}
+                        {{ 'profile.user_profile.hidden'|trans }}
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'profile.user_profile.gender'|trans }}</dt>
+                <dd class="col-sm-8">
+                    {% if settings.showGender or canBypassPrivacy %}
+                        {{ profile.gender ? ('profile.' ~ profile.gender.label)|trans }}
+                    {% else %}
+                        {{ 'profile.user_profile.hidden'|trans }}
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'profile.user_profile.birth_date'|trans }}</dt>
+                <dd class="col-sm-8">
+                    {% if settings.showBirthDate or canBypassPrivacy %}
+                        {{ profile.birthDate ? profile.birthDate|date('d.m.Y') : '—' }}
+                    {% else %}
+                        {{ 'profile.user_profile.hidden'|trans }}
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'profile.user_profile.location'|trans }}</dt>
+                <dd class="col-sm-8">{{ profile.location ?: '—' }}</dd>
+
+                {% set visibleGroups = profileUser.rolesAsObjects|filter(g => g.id > 2) %}
+                {% if visibleGroups is not empty %}
+                    <dt class="col-sm-4">{{ 'profile.user_profile.groups'|trans }}</dt>
+                    <dd class="col-sm-8">
+                        {% for group in visibleGroups %}
+                            <span>{{ group.name }}</span>
+                        {% endfor %}
+                    </dd>
+                {% endif %}
+
+                <dt class="col-sm-4">{{ 'profile.user_profile.posts'|trans }}</dt>
+                <dd class="col-sm-8">{{ postCount }}</dd>
+            </dl>
+
+        </div>
+    </div>
+{% endblock %}

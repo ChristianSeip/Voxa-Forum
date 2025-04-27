@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'topic.edit.title'|trans }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for crumb in breadcrumbs %}
+                {% if loop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ crumb.label }}</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+    <h1>{{ 'topic.edit.heading'|trans }}</h1>
+
+    <div class="max-w-xl w-full">
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.title) }}
+            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.title) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.stickyStatus) }}
+            {{ form_widget(form.stickyStatus, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.stickyStatus) }}
+        </div>
+
+        <div class="mb-3 form-check">
+            {{ form_widget(form.isClosed, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.isClosed, null, {'label_attr': {'class': 'form-check-label'}}) }}
+            {{ form_errors(form.isClosed) }}
+        </div>
+
+        <button class="btn btn-primary">{{ 'topic.edit.submit'|trans }}</button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

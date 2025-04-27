@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'topic.create.title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/vendor/trix/trix.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('/vendor/trix/trix.umd.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'topic.create.heading'|trans }}</h1>
+
+    <div class="w-full max-w-3xl">
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.title) }}
+            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.title) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.message) }}
+            {{ form_widget(form.message) }}
+            {{ form_errors(form.message) }}
+            <trix-editor input="{{ form.message.vars.id }}" class="trix-content mt-2"></trix-editor>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {{ 'topic.create.submit'|trans }}
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

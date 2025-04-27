@@ -1,0 +1,21 @@
+This software is provided as a free resource for private and commercial use.
+You are permitted to modify the software at your own risk to suit your needs.
+
+However, redistribution of the software — including publishing copies on your own servers, repositories, websites, or otherwise offering it for download — is strictly prohibited, except by the original author.
+
+Please note:
+
+This software is provided as a test/demo project and is not considered production-ready.
+
+It is made available "as-is" without any guarantees of functionality, security, or fitness for any particular purpose.
+
+Use is entirely at your own risk.
+
+The author assumes no responsibility for any loss, damage, or consequences arising from the use, modification, or deployment of this software.
+
+No support, maintenance, or updates are guaranteed.
+
+Additionally, all copyright notices or attribution statements embedded within the software must remain intact and must not be altered, hidden, or removed under any circumstances.
+
+Copyright © 2025 Christian Seip – https://www.seip.io
+

@@ -1,0 +1,8 @@
+{% for mod in forum.moderators %}
+    <li class="list-group-item d-inline-flex align-items-center me-2 mb-2 p-2">
+        {{ mod.user.username }}
+        <button type="button" class="btn-close ms-2 remove-moderator"
+                data-url="{{ path('api_forum_remove_moderator', { id: forum.id, userId: mod.user.id }) }}"
+                aria-label="Remove"></button>
+    </li>
+{% endfor %}

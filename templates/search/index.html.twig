@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'search.results'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">
+        {% if totalEntries > 0 %} {{ totalEntries }} {% endif %}
+        {{ 'search.results'|trans }}
+    </h1>
+
+    <form method="get" class="mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-9">
+                <label for="q" class="form-label">{{ 'search.query'|trans }}</label>
+                <input type="text" name="q" id="q" class="form-control" value="{{ query }}">
+            </div>
+            <div class="col-md-3">
+                <label for="mode" class="form-label">{{ 'search.mode'|trans }}</label>
+                <select name="mode" id="mode" class="form-select">
+                    <option value="text" {% if mode == 'text' %}selected{% endif %}>{{ 'search.mode.text'|trans }}</option>
+                    <option value="user" {% if mode == 'user' %}selected{% endif %}>{{ 'search.mode.user'|trans }}</option>
+                </select>
+            </div>
+        </div>
+
+        <details class="mt-3 mb-4">
+            <summary class="btn btn-outline-secondary mb-2">{{ 'search.advanced_filters'|trans }}</summary>
+
+            <div class="row mb-3 mt-3">
+                <div class="col-md-4">
+                    <label for="days" class="form-label">{{ 'search.days'|trans }}</label>
+                    <select name="days" id="days" class="form-select">
+                        <option value="0">{{ 'search.days.all'|trans }}</option>
+                        <option value="1" {% if days == 1 %}selected{% endif %}>{{ 'search.days.1'|trans }}</option>
+                        <option value="7" {% if days == 7 %}selected{% endif %}>{{ 'search.days.7'|trans }}</option>
+                        <option value="30" {% if days == 30 %}selected{% endif %}>{{ 'search.days.30'|trans }}</option>
+                        <option value="365" {% if days == 365 %}selected{% endif %}>{{ 'search.days.365'|trans }}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">{{ 'search.forums'|trans }}</label>
+                    <select name="forums[]" class="form-select" multiple>
+                        {% for forum in forums %}
+                            <option value="{{ forum.id }}" {% if forum.id in selectedForumIds %}selected{% endif %}>
+                                {{ forum.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{{ 'search.hint.forum_multiple'|trans }}</small>
+                </div>
+            </div>
+        </details>
+
+        <button type="submit" class="btn btn-primary">{{ 'search.button'|trans }}</button>
+    </form>
+
+    {% if results is empty %}
+        <p><em>{{ 'search.no_results'|trans }}</em></p>
+    {% else %}
+        <div class="list-group mb-4">
+            {% for result in results %}
+                <a href="{{ result.url }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ result.title }}</h5>
+                        <small class="text-muted">{{ result.forum }}</small>
+                    </div>
+                    {% if result.content %}
+                        <p class="mb-1 text-truncate">{{ result.content|raw }}</p>
+                    {% endif %}
+                    <small class="text-muted">
+                        {{ result.type == 'post' ? 'search.result_type_post'|trans : 'search.result_type_topic'|trans }}
+                    </small>
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if totalPages > 1 %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {% if i == currentPage %}active{% endif %}">
+                            {% set params = app.request.query.all %}
+                            {% set params = params|merge({page: i}) %}
+                            <a class="page-link" href="{{ path(app.request.attributes.get('_route'), params) }}">
+                                {{ i }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

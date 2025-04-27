@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|default('post.form.title.default'|trans) }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/vendor/trix/trix.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('/vendor/trix/trix.umd.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>{{ heading|default('post.editor.heading.default'|trans) }}</h1>
+
+    <div class="w-full max-w-3xl">
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.content) }}
+            {{ form_widget(form.content) }}
+            {{ form_errors(form.content) }}
+            <trix-editor input="{{ form.content.vars.id }}" class="trix-content mt-2"></trix-editor>
+        </div>
+
+        <button class="btn btn-primary mt-3">
+            {{ button_label|default('post.editor.submit.default'|trans) }}
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

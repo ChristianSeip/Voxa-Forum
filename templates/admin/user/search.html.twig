@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.user.index.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h4 mb-0">{{ 'admin.user.index.heading'|trans }}</h1>
+                <a href="{{ path('admin_user_create') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus fa-sm"></i> {{ 'admin.user.index.create_button'|trans }}
+                </a>
+            </div>
+
+            {% for msg in app.flashes('success') %}
+                <div class="alert alert-success mt-3">{{ msg }}</div>
+            {% endfor %}
+
+            <form method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="{{ 'admin.user.index.search_placeholder'|trans }}">
+                    <button class="btn btn-outline-secondary" type="submit">{{ 'admin.user.index.search_button'|trans }}</button>
+                </div>
+            </form>
+
+            {% if users is empty %}
+                <div class="alert alert-info">
+                    {{ 'admin.user.index.empty'|trans }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">{{ 'username'|trans }}</th>
+                            <th scope="col">{{ 'mail'|trans }}</th>
+                            <th scope="col">{{ 'active'|trans }}</th>
+                            <th scope="col">{{ 'actions'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.isVerified %}
+                                        <span class="badge bg-success">{{ 'yes'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{{ 'no'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap">
+                                    <a href="{{ path('admin_user_edit', { id: user.id }) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-pen fa-xs"></i> {{ 'edit'|trans }}
+                                    </a>
+                                    <form method="post" action="{{ path('admin_user_delete', { id: user.id }) }}"
+                                          class="d-inline" onsubmit="return confirm('{{ 'admin.user.delete.confirm'|trans }}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash fa-xs"></i> {{ 'delete'|trans }}
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {# Pagination #}
+                {% set lastPage = (total / limit)|round(0, 'ceil') %}
+                {% if lastPage < 1 %}{% set lastPage = 1 %}{% endif %}
+                {% if lastPage > 1 %}
+                    <nav>
+                        <ul class="pagination justify-content-center mt-4">
+                            {% for p in 1..lastPage %}
+                                <li class="page-item {{ p == page ? 'active' }}">
+                                    <a class="page-link" href="{{ path('admin_user_index', { q: query, page: p }) }}">{{ p }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

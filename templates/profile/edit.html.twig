@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'profile.edit.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4">{{ 'profile.edit.title'|trans }}</h1>
+
+            {{ form_start(editForm) }}
+
+            <h2 class="h6 text-muted mt-4">{{ 'profile.edit.account_data'|trans }}</h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(editForm.email) }}
+                        {{ form_widget(editForm.email, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(editForm.email) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(editForm.plainPassword) }}
+                        {{ form_widget(editForm.plainPassword, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(editForm.plainPassword) }}
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="h6 text-muted mt-4">{{ 'profile.edit.personal_data'|trans }}</h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(editForm.userProfile.name) }}
+                        {{ form_widget(editForm.userProfile.name, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(editForm.userProfile.name) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(editForm.userProfile.gender) }}
+                        {{ form_widget(editForm.userProfile.gender, { attr: { class: 'form-select' } }) }}
+                        {{ form_errors(editForm.userProfile.gender) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(editForm.userProfile.birthDate) }}
+                        {{ form_widget(editForm.userProfile.birthDate, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(editForm.userProfile.birthDate) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(editForm.userProfile.location) }}
+                        {{ form_widget(editForm.userProfile.location, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(editForm.userProfile.location) }}
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary mt-3">{{ 'profile.edit.save'|trans }}</button>
+
+            {{ form_end(editForm) }}
+        </div>
+    </div>
+{% endblock %}

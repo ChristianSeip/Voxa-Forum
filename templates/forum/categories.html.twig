@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'forum.title'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">{{ 'forum.heading.category_overview'|trans }}</h1>
+
+    {% if categories is not empty %}
+        <div class="list-group">
+            {% for category in categories %}
+                <div class="list-group-item py-4">
+                    <div class="row align-items-start gy-3">
+                        <div class="col-12 col-lg-8">
+                            <h2 class="h5 mb-1">
+                                <a href="{{ path('app_forum_view', { id: category.id, slug: category.slug }) }}" class="text-decoration-none">
+                                    {{ category.name }}
+                                </a>
+                            </h2>
+
+                            {% if category.description %}
+                                <p class="mb-2 text-muted">{{ category.description }}</p>
+                            {% endif %}
+
+                            {% set post = lastPosts[category.id] ?? null %}
+                            {% if post %}
+                                <div class="small text-muted">
+                                    {{ "forum.last_post"|trans }}:
+                                    <a href="{{ path('app_topic_view', { id: post.topic.id, slug: post.topic.slug, post: post.id }) }}#p{{ post.id }}" class="text-decoration-none">
+                                        {{ post.topic.title|slice(0, 30) }}{% if post.topic.title|length > 30 %}…{% endif %}
+                                    </a><br>
+                                    <small>
+                                        {{ 'forum.created_by'|trans }}
+                                        {% if post.author is null %}
+                                            {{ 'deleted_username'|trans }}
+                                        {% elseif post.author.id == 1 %}
+                                            {{ post.author.username }}
+                                        {% else %}
+                                            <a href="{{ path('app_profile_view', { identifier: post.author.username }) }}">
+                                                {{ post.author.username }}
+                                            </a>
+                                        {% endif %}
+                                        {{ "forum.created_at"|trans}} {{ post.createdAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-lg-4 text-lg-end">
+                            <ul class="list-unstyled small mb-0">
+                                <li><strong>{{ "forum.forums"|trans }}:</strong> {{ forumCount[category.id] }}</li>
+                                <li><strong>{{ "forum.topics"|trans }}:</strong> {{ topicCount[category.id] }}</li>
+                                <li><strong>{{ "forum.posts"|trans }}:</strong> {{ postCount[category.id] }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><em>{{ 'forum.no_categories'|trans }}</em></p>
+    {% endif %}
+{% endblock %}

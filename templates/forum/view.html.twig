@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ forum.name }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for crumb in breadcrumbs %}
+                {% if loop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ crumb.label }}</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <h1 class="mb-3">{{ forum.name }}</h1>
+
+    {% if forum.description %}
+        <p class="text-muted">{{ forum.description|nl2br }}</p>
+    {% endif %}
+
+    {% if forum.children|length > 0 %}
+        <h2 class="h5 mt-4">{{ 'forum.subforums'|trans }}</h2>
+        <div class="row g-3 mb-4">
+            {% for subforum in forum.children %}
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="border rounded p-3 h-100">
+                        <h3 class="h6 mb-1">
+                            <a href="{{ path('app_forum_view', { id: subforum.id, slug: subforum.slug }) }}" class="text-decoration-none">
+                                {{ subforum.name }}
+                            </a>
+                        </h3>
+                        {% if subforum.description %}
+                            <p class="text-muted small mb-0">{{ subforum.description }}</p>
+                        {% endif %}
+                        {% if subforum.moderators|length > 0 %}
+                            <div class="mt-2 small text-muted">
+                                {{ 'forum.moderators'|trans }}
+                                {% for moderator in subforum.moderators %}
+                                    <a href="{{ path('app_profile_view', { identifier: moderator.user.username }) }}">{{ moderator.user.username }}</a>
+                                    {% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-1 small text-muted">
+                            {% if postCount[subforum.id] and postCount[subforum.id] > 0 %}
+                                <div>
+                                    {{ 'forum.posts'|trans }}: {{ postCount[subforum.id] }}
+                                </div>
+                            {% endif %}
+                            {% set post = lastPosts[subforum.id] ?? null %}
+                            {% if post %}
+                                <div class="mt-1">
+                                    {{ 'forum.last_post'|trans }}:
+                                    <a href="{{ path('app_topic_view', { id: post.topic.id, slug: post.topic.slug, post: post.id }) }}#p{{ post.id }}" class="text-decoration-none">
+                                        {{ post.topic.title|slice(0, 30) }}{% if post.topic.title|length > 30 %}…{% endif %}
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ 'forum.created_by'|trans }}
+                                        {% if post.author is null %}
+                                            {{ 'deleted_username'|trans }}
+                                        {% elseif post.author.id == 1 %}
+                                            {{ post.author.username }}
+                                        {% else %}
+                                            <a href="{{ path('app_profile_view', { identifier: post.author.username }) }}">
+                                                {{ post.author.username }}
+                                            </a>
+                                        {% endif %}
+                                        {{ 'forum.created_at'|trans }} {{ post.createdAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if has_forum_permission('can_create_topic', forum) %}
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ path('app_topic_create', { id: forum.id }) }}" class="btn btn-success">
+            {{ 'forum.new_topic'|trans }}
+        </a>
+    </div>
+    {% endif %}
+
+    <h2 class="h5">{{ 'forum.topics'|trans }}</h2>
+
+    {% if forum.topics|length > 0 %}
+        <div class="list-group">
+            {% for topic in forum.topics %}
+                <div class="list-group-item py-3 px-2">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="me-2">
+                                    {% if topic.isClosed %}
+                                        <i class="fas fa-lock fa-xs"></i>
+                                    {% endif %}
+
+                                    {% if topic.stickyStatus == 1 %}
+                                        <i class="fas fa-thumb-tack fa-xs text-warning"></i>
+                                    {% elseif topic.stickyStatus == 2 %}
+                                        <i class="fas fa-bullhorn fa-xs text-danger"></i>
+                                    {% endif %}
+
+                                    <a href="{{ path('app_topic_view', { id: topic.id, slug: topic.slug }) }}" class="fw-semibold">
+                                        {{ topic.title }}
+                                    </a>
+                                </div>
+
+                                <div class="d-flex gap-2 align-items-center">
+                                    {% if
+                                        has_forum_permission('can_edit_topic', forum)
+                                        or (
+                                        topic.author and app.user
+                                        and topic.author.id == app.user.id
+                                        and has_forum_permission('can_edit_own_post', forum)
+                                        and (topic.createdAt.timestamp + get_permission('edit_own_post_timer', forum) * 60) > "now"|date('U')
+                                        )
+                                    %}
+                                        <a href="{{ path('app_topic_edit', { id: topic.id }) }}"
+                                           class="text-secondary"
+                                           title="{{ 'topic.edit.title'|trans }}">
+                                            <i class="fas fa-pen fa-xs"></i>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if has_forum_permission('can_delete_topic', forum) %}
+                                        <form method="post" action="{{ path('app_topic_delete', { id: topic.id }) }}"
+                                              onsubmit="return confirm('{{ 'topic.delete.confirm'|trans }}');"
+                                              class="m-0 p-0">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_topic_' ~ topic.id) }}">
+                                            <button type="submit" class="btn btn-link btn-sm text-danger p-0 m-0" title="{{ 'topic.delete.title'|trans }}">
+                                                <i class="fas fa-trash-alt fa-xs"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <small class="text-muted d-block mt-1">
+                                {{ 'forum.topic.created_by'|trans }}
+                                {% if topic.author is null %}
+                                    {{ 'deleted_username'|trans }}
+                                {% elseif topic.author.id == 1 %}
+                                    {{ topic.author.username }}
+                                {% else %}
+                                    <a href="{{ path('app_profile_view', { identifier: topic.author.username }) }}" class="{{ username_style(topic.author, forum) }}">
+                                        {{ topic.author.username }}
+                                    </a>
+                                {% endif %}
+                                 ({{ topic.createdAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') }})
+                            </small>
+                        </div>
+
+                        <div class="col-6 col-md-3 text-md-center">
+                            <div class="small text-muted">
+                                {{ 'forum.topic.posts'|trans }}: {{ topic.postCount - 1 }}<br>
+                                {{ 'forum.topic.views'|trans }}: {{ topic.viewCount }}
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3 text-md-end">
+                            {% if topic.lastPostAt %}
+                                <div class="small text-muted">
+                                    <div>{{ 'forum.topic.last_post'|trans }}:</div>
+                                    <div>
+                                        {% if topic.lastPoster is null %}
+                                            {{ 'deleted_username'|trans }}
+                                        {% elseif topic.lastPoster.id == 1 %}
+                                            {{ topic.lastPoster.username }}
+                                        {% else %}
+                                            <a href="{{ path('app_profile_view', { identifier: topic.lastPoster.username }) }}">
+                                                {{ topic.lastPoster.username }}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <time>{{ topic.lastPostAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') }}</time>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><em>{{ 'forum.no_topics'|trans }}</em></p>
+    {% endif %}
+{% endblock %}

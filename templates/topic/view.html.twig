@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ topic.title }} | {{ forum.name }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for crumb in breadcrumbs %}
+                {% if loop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ crumb.label }}</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-column gap-4">
+        {% for post in posts %}
+            <article id="p{{ post.id }}" class="border rounded shadow-sm bg-white">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-light flex-wrap">
+                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                        <strong>
+                            {{ loop.index == 1 ? topic.title : 'RE: ' ~ topic.title }}
+                        </strong>
+                        <div class="text-muted small">
+                            <time datetime="{{ post.createdAt|date('c') }}">
+                                {{ post.createdAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') }}
+                            </time>
+                            <a href="#p{{ post.id }}" class="ms-2">#{{ post.id }}</a>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        {% if has_forum_permission('can_reply_topic', forum) %}
+                        <a href="{{ path('app_post_reply', { id: post.id }) }}" class="btn btn-sm btn-outline-primary" title="{{ 'post.buttons.reply'|trans }}">
+                            <i class="fas fa-reply"></i> {{ 'post.buttons.reply'|trans }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-md-row align-items-stretch">
+                    {# Post Author #}
+                    <div class="author-box border-md-end pe-md-3 me-md-3 mb-3 px-3 py-3 mb-md-0 text-md-start bg-body-secondary">
+                    {% if post.author is null %}
+                            <strong>{{ 'deleted_username'|trans }}</strong>
+                        {% elseif post.author.id == 1 %}
+                            <strong>{{ post.author.username }}</strong>
+                        {% else %}
+                            <a href="{{ path('app_profile_view', { identifier: post.author.username }) }}" class="{{ username_style(post.author, forum) }}">
+                                {{ post.author.username }}
+                            </a>
+                        {% endif %}
+
+                        {% if post.author %}
+                            <dl class="small text-muted mt-1 d-none d-md-block">
+                                {% if post.author.userProfile.name %}
+                                    <div class="d-flex mb-1">
+                                        <dt class="fw-normal me-2 flex-shrink-0" style="min-width: 100px;">{{ 'profile.user_profile.display_name'|trans }}:</dt>
+                                        <dd class="mb-0">{{ post.author.userProfile.name }}</dd>
+                                    </div>
+                                {% endif %}
+
+                                {% if post.author.userProfile.gender %}
+                                    <div class="d-flex mb-1">
+                                        <dt class="fw-normal me-2 flex-shrink-0" style="min-width: 100px;">{{ 'profile.user_profile.gender'|trans }}:</dt>
+                                        <dd class="mb-0">{{ ('profile.' ~ post.author.userProfile.gender.label)|trans }}</dd>
+                                    </div>
+                                {% endif %}
+
+                                {% if post.author.userProfile.birthDate %}
+                                    <div class="d-flex mb-1">
+                                        <dt class="fw-normal me-2 flex-shrink-0" style="min-width: 100px;">{{ 'profile.user_profile.birth_date'|trans }}:</dt>
+                                        <dd class="mb-0">{{ post.author.userProfile.birthDate|date('d.m.Y') }}</dd>
+                                    </div>
+                                {% endif %}
+
+                                {% if post.author.userProfile.location %}
+                                    <div class="d-flex mb-1">
+                                        <dt class="fw-normal me-2 flex-shrink-0" style="min-width: 100px;">{{ 'profile.user_profile.location'|trans }}:</dt>
+                                        <dd class="mb-0">{{ post.author.userProfile.location }}</dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+
+                        {% endif %}
+                    </div>
+
+                    {# Post Content #}
+                    <div class="flex-fill d-flex flex-column px-3 py-3" style="min-height: 100%;">
+                        <div class="post-content flex-grow-1 d-flex flex-column px-3 py-3">
+                        {% if post.deleted %}
+                            <div class="text-muted fst-italic">{{ 'post.deleted_message'|trans({'%username%': post.deletedBy.username}) }}</div>
+                        {% else %}
+                            {{ bbcodeService.convertToSafeHTML(post.content)|raw }}
+                        {% endif %}
+                        </div>
+
+                        {% if post.updatedAt != post.createdAt and post.deleted == 0 %}
+                            <p class="mt-3 mb-0 small fst-italic text-muted">
+                                {% set username = post.editor is not null ? post.editor.username : 'deleted_username'|trans %}
+                                {% set timestamp = post.updatedAt|date('d.m.Y H:i', null, app.user ? app.user.timezone : 'UTC') %}
+                                {{ 'post.edit_notice'|trans({'%username%': username, '%timestamp%': timestamp}) }}
+                            </p>
+                        {% endif %}
+
+                        <div class="mt-auto pt-3 d-flex justify-content-end gap-2">
+                            {% if has_forum_permission('can_edit_post', forum)
+                                or (
+                                post.author and app.user
+                                and post.author.id == app.user.id
+                                and has_forum_permission('can_edit_own_post', forum)
+                                and (post.createdAt.timestamp + get_permission('edit_own_post_timer', forum) * 60) > "now"|date('U')
+                                )
+                            %}
+                                <a href="{{ path('app_post_edit', { id: post.id }) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> {{ 'post.buttons.edit'|trans }}
+                                </a>
+                            {% endif %}
+                            {% if has_forum_permission('can_delete_post', forum)
+                                or (
+                                post.author and app.user
+                                and post.author.id == app.user.id
+                                and has_forum_permission('can_delete_own_post', forum)
+                                and (post.createdAt.timestamp + get_permission('edit_own_post_timer', forum) * 60) > "now"|date('U')
+                                )
+                            %}
+                                <form method="post"
+                                      action="{{ path('app_post_delete', { id: post.id }) }}"
+                                      onsubmit="return confirm('{{ 'post.delete.confirm'|trans }}');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_post_' ~ post.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash-alt"></i> {{ 'post.buttons.delete'|trans }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                            {#
+                            {% if is_granted('REPORT', post) %}
+                                <a href="{{ path('app_post_report', { id: post.id }) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-flag"></i> {{ 'post.report'|trans }}
+                                </a>
+                            {% endif %}
+                            #}
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    {% if totalPages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for i in 1..totalPages %}
+                    <li class="page-item {% if i == page %}active{% endif %}">
+                        {% if i == page %}
+                            <span class="page-link">{{ i }}</span>
+                        {% else %}
+                            <a class="page-link" href="{{ path('app_topic_view', { id: topic.id, slug: topic.slug, page: i }) }}">
+                                {{ i }}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

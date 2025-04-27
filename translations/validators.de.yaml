@@ -1,0 +1,6 @@
+user:
+  email:
+    invalid: "Bitte gib eine gültige E-Mail-Adresse ein."
+    unique: "Es existiert bereits ein Konto mit dieser E-Mail-Adresse."
+  username:
+    unique: "Es existiert bereits ein Konto mit diesem Benutzernamen."

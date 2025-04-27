@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.forum.index.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h4 mb-0">{{ 'admin.forum.index.heading'|trans }}</h1>
+                <a href="{{ path('admin_forum_create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> {{ 'admin.forum.index.create_button'|trans }}
+                </a>
+            </div>
+
+            {% macro render_forum_tree(forums, level) %}
+                <ul class="list-group list-group-flush">
+                    {% for forum in forums %}
+                        <li class="list-group-item px-0"> {# px-0 entfernt horizontales Padding #}
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="ps-{{ level * 4 }}"> {# Bootstrap padding-start für Einzug #}
+                                    <strong>{{ forum.name }}</strong>
+                                    <div class="text-muted small">{{ forum.description }}</div>
+                                </div>
+                                <div class="text-nowrap me-2">
+                                    <a href="{{ path('admin_forum_edit', { id: forum.id }) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-pen fa-xs"></i> {{ 'edit'|trans }}
+                                    </a>
+                                    <form method="post" action="{{ path('admin_forum_delete', { id: forum.id }) }}"
+                                          class="d-inline" onsubmit="return confirm('{{ 'admin.forum.delete.confirm'|trans }}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_forum_' ~ forum.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash fa-xs"></i> {{ 'delete'|trans }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {% if forum.children|length > 0 %}
+                                {{ _self.render_forum_tree(forum.children, level + 1) }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endmacro %}
+
+            {{ _self.render_forum_tree(forums, 0) }}
+        </div>
+    </div>
+{% endblock %}

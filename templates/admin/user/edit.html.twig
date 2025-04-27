@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'admin.user.edit.title'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4">{{ 'admin.user.edit.heading'|trans }}</h1>
+
+            {% for msg in app.flashes('success') %}
+                <div class="alert alert-success mt-3">{{ msg }}</div>
+            {% endfor %}
+
+            <ul class="nav nav-tabs mb-4" id="editUserTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#main"
+                            type="button" role="tab">{{ 'admin.user.edit.tab.main'|trans }}</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                            type="button" role="tab">{{ 'admin.user.edit.tab.profile'|trans }}</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings"
+                            type="button" role="tab">{{ 'admin.user.edit.tab.settings'|trans }}</button>
+                </li>
+            </ul>
+
+            {{ form_start(userForm) }}
+            <div class="tab-content" id="editUserTabContent">
+                <div class="tab-pane fade show active" id="main" role="tabpanel">
+                    <div class="mb-3">
+                        {{ form_label(userForm.username) }}
+                        {{ form_widget(userForm.username, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(userForm.username) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(userForm.email) }}
+                        {{ form_widget(userForm.email, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(userForm.email) }}
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        {{ form_widget(userForm.isVerified, { 'attr': { 'class': 'form-check-input' } }) }}
+                        {{ form_label(userForm.isVerified, null, { 'label_attr': { 'class': 'form-check-label' } }) }}
+                        {{ form_errors(userForm.isVerified) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(userForm.timezone) }}
+                        {{ form_widget(userForm.timezone, { 'attr': { 'class': 'form-select' } }) }}
+                        {{ form_errors(userForm.timezone) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(userForm.locale) }}
+                        {{ form_widget(userForm.locale, { 'attr': { 'class': 'form-select' } }) }}
+                        {{ form_errors(userForm.locale) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(userForm.plainPassword) }}
+                        {{ form_widget(userForm.plainPassword, { 'attr': { 'autocomplete': 'off', 'class': 'form-control' } }) }}
+                        {{ form_errors(userForm.plainPassword) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(userForm.roles) }}
+                        {{ form_widget(userForm.roles, { 'attr': { 'class': 'form-select', 'multiple': 'multiple' } }) }}
+                        {{ form_errors(userForm.roles) }}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="profile" role="tabpanel">
+                    <div class="mb-3">
+                        {{ form_label(userForm.userProfile.gender) }}
+                        {{ form_widget(userForm.userProfile.gender, { 'attr': { 'class': 'form-select' } }) }}
+                        {{ form_errors(userForm.userProfile.gender) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(userForm.userProfile.birthdate) }}
+                        {{ form_widget(userForm.userProfile.birthdate, { 'attr': { 'class': 'form-control' } }) }}
+                        {{ form_errors(userForm.userProfile.birthdate) }}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="settings" role="tabpanel">
+                    <div class="form-check mb-2">
+                        {{ form_widget(userForm.settings.showGender, { 'attr': { 'class': 'form-check-input' } }) }}
+                        {{ form_label(userForm.settings.showGender, null, { 'label_attr': { 'class': 'form-check-label' } }) }}
+                        {{ form_errors(userForm.settings.showGender) }}
+                    </div>
+                    <div class="form-check mb-2">
+                        {{ form_widget(userForm.settings.showBirthdate, { 'attr': { 'class': 'form-check-input' } }) }}
+                        {{ form_label(userForm.settings.showBirthdate, null, { 'label_attr': { 'class': 'form-check-label' } }) }}
+                        {{ form_errors(userForm.settings.showBirthdate) }}
+                    </div>
+                    <div class="form-check mb-2">
+                        {{ form_widget(userForm.settings.showEmail, { 'attr': { 'class': 'form-check-input' } }) }}
+                        {{ form_label(userForm.settings.showEmail, null, { 'label_attr': { 'class': 'form-check-label' } }) }}
+                        {{ form_errors(userForm.settings.showEmail) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-primary">{{ 'admin.save'|trans }}</button>
+            </div>
+            {{ form_end(userForm) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.role.index.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">{{ 'admin.role.index.heading'|trans }}</h1>
+        <a href="{{ path('admin_role_create') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> {{ 'admin.role.index.create_button'|trans }}
+        </a>
+    </div>
+
+    <div class="list-group">
+        {% for role in roles %}
+            <div class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="h6 mb-1">{{ role.name }}</h2>
+                    {% if role.description %}
+                        <p class="text-muted small mb-0">{{ role.description }}</p>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ path('admin_role_edit', {id: role.id}) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-pen fa-xs"></i> {{ 'admin.role.index.edit_button'|trans }}
+                    </a>
+                    {% if role.isSystemRole %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled
+                                title="{{ 'admin.role.index.delete_disabled_title'|trans }}">
+                            <i class="fas fa-lock fa-xs"></i> {{ 'admin.role.index.delete_button'|trans }}
+                        </button>
+                    {% else %}
+                        <form method="post" action="{{ path('admin_role_delete', {id: role.id}) }}"
+                              onsubmit="return confirm('{{ 'admin.role.index.delete_confirm'|trans }}');"
+                              class="m-0 p-0">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_role_' ~ role.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash fa-xs"></i> {{ 'admin.role.index.delete_button'|trans }}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
