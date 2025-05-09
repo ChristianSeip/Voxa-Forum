@@ -49,6 +49,7 @@ class PostController extends AbstractController
 			$topic->setLastPostAt($now)
 				->setLastPoster($user)
 				->setPostCount($topic->getPostCount() + 1);
+			$user->incrementPostCount();
 			$em->persist($post);
 			$em->flush();
 			$url = $this->generateUrl('app_topic_view', [

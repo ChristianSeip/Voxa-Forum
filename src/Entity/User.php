@@ -44,6 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\Column(type: 'datetime', nullable: false)]
 	private \DateTimeInterface $registeredAt;
 
+	#[ORM\Column(type: 'integer', options: ['default' => 0])]
+	private int $postCount = 0;
+
 	/**
 	 * @var Collection<int, UserRole>
 	 */
@@ -157,6 +160,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	public function setRegisteredAt(\DateTimeInterface $registeredAt): static
 	{
 		$this->registeredAt = $registeredAt;
+		return $this;
+	}
+
+	public function getPostCount(): int
+	{
+		return $this->postCount;
+	}
+
+	public function incrementPostCount(): static
+	{
+		$this->postCount++;
 		return $this;
 	}
 

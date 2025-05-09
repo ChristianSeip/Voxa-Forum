@@ -116,6 +116,7 @@ class TopicController extends AbstractController
 				->setUpdatedAt($now)
 				->setIpAddress($request->getClientIp());
 
+			$user->incrementPostCount();
 			$em->persist($topic);
 			$em->persist($post);
 			$em->flush();
