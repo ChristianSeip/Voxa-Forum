@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
 	 * Handles the registration process, including user creation and email verification.
 	 */
 	#[Route('/register', name: 'app_register')]
-	public function register(Request $request, UserPasswordHasherInterface $hasher, Security $security, EntityManagerInterface $em): Response
+	public function register(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $em): Response
 	{
 		$user = new User();
 		$form = $this->createForm(RegistrationFormType::class, $user);
@@ -40,6 +40,7 @@ class RegistrationController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$user->setPassword($hasher->hashPassword($user, $form->get('plainPassword')->getData()));
 			$user->setTimezone(date_default_timezone_get());
+			$user->setRegisteredAt(new \DateTime('now'));
 			$this->initializeUserProfile($user);
 			$this->initializeUserSettings($user);
 			$em->persist($user);

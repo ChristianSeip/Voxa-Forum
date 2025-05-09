@@ -15,6 +15,9 @@
             </h1>
 
             <dl class="row mt-4">
+                <dt class="col-sm-4">{{ 'profile.user_profile.joined'|trans }}</dt>
+                <dd class="col-sm-8">{{ profileUser.registeredAt|date('d.m.Y H:i:s', null, app.user ? app.user.timezone : 'UTC') }}</dd>
+
                 <dt class="col-sm-4">{{ 'profile.user_profile.display_name'|trans }}</dt>
                 <dd class="col-sm-8">{{ profile.name ?: '—' }}</dd>
 
