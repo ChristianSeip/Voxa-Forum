@@ -10,6 +10,7 @@ use App\Service\PermissionService;
 use App\Service\UserService;
 use App\Twig\BreadcrumbExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -57,23 +58,25 @@ class ForumController extends AbstractController
 		]);
 	}
 
-	/**
-	 * Displays a specific forum, verifying user permission.
-	 */
 	#[Route('/forum/{id}-{slug}', name: 'app_forum_view')]
-	public function view(Forum $forum, PermissionService $permissionService, TranslatorInterface $translator, BreadcrumbExtension $breadcrumbs): Response
+	public function view(Forum $forum, Request $request, PermissionService $permissionService, TranslatorInterface $translator, BreadcrumbExtension $breadcrumbs): Response
 	{
 		$user = $this->userService->getCurrentUser();
 		if (!$permissionService->hasPermission($user, 'can_view_forum', $forum)) {
 			throw $this->createAccessDeniedException($translator->trans('forum.access_denied', [], 'messages'));
 		}
 		$breadcrumbs->buildForForum($forum);
-		$categories[] = $forum;
+		$page = max(1, $request->query->getInt('page', 1));
+		$limit = 20;
+		$offset = ($page - 1) * $limit;
+		$topics = $this->topicRepository->findByForum($forum, $limit, $offset);
+		$total = $this->topicRepository->count(['forum' => $forum]);
+		$totalPages = max(1, (int)ceil($total / $limit));
 		return $this->render('forum/view.html.twig', [
-			'forum'      => $forum,
-			'topicCount' => $this->countEntries($categories, $this->topicRepository->countTopicsPerForum()),
-			'postCount'  => $this->countEntries($categories, $this->extractPostCountsFromTopics($categories)),
-			'lastPosts'  => $this->getLastPost($categories),
+			'forum'       => $forum,
+			'topics'      => $topics,
+			'currentPage' => $page,
+			'totalPages'  => $totalPages,
 		]);
 	}
 
@@ -120,28 +123,11 @@ class ForumController extends AbstractController
 	 */
 	private function extractPostCountsFromTopics(array $forums): array
 	{
-		$rawCounts = [];
+		$forumIds = [];
 		foreach ($forums as $forum) {
-			$this->collectDirectPostCounts($forum, $rawCounts);
+			$this->collectForumIdsRecursive($forum, $forumIds);
 		}
-		return $rawCounts;
-	}
-
-	/**
-	 * Recursively collects post counts for a forum's own topics.
-	 *
-	 * @param array<int, int> $rawCounts
-	 */
-	private function collectDirectPostCounts(Forum $forum, array &$rawCounts): void
-	{
-		$count = 0;
-		foreach ($forum->getTopics() as $topic) {
-			$count += $topic->getPostCount();
-		}
-		$rawCounts[$forum->getId()] = $count;
-		foreach ($forum->getChildren() as $child) {
-			$this->collectDirectPostCounts($child, $rawCounts);
-		}
+		return $this->topicRepository->countPostsPerForum($forumIds);
 	}
 
 	/**

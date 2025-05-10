@@ -92,9 +92,9 @@
 
     <h2 class="h5">{{ 'forum.topics'|trans }}</h2>
 
-    {% if forum.topics|length > 0 %}
+    {% if topics|length > 0 %}
         <div class="list-group">
-            {% for topic in forum.topics %}
+            {% for topic in topics %}
                 <div class="list-group-item py-3 px-2">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
@@ -192,6 +192,24 @@
                 </div>
             {% endfor %}
         </div>
+        {% if totalPages > 1 %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {% if i == currentPage %}active{% endif %}">
+                            {% if i == currentPage %}
+                                <span class="page-link">{{ i }}</span>
+                            {% else %}
+                                <a class="page-link"
+                                   href="{{ path('app_forum_view', { id: forum.id, slug: forum.slug }) ~ '?page=' ~ i }}">
+                                    {{ i }}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
     {% else %}
         <p><em>{{ 'forum.no_topics'|trans }}</em></p>
     {% endif %}

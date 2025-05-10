@@ -43,18 +43,11 @@ class Forum
 	#[ORM\OneToMany(targetEntity: ForumPermission::class, mappedBy: 'forum', orphanRemoval: true)]
 	private Collection $forumPermissions;
 
-	/**
-	 * @var Collection<int, Topic>
-	 */
-	#[ORM\OneToMany(targetEntity: Topic::class, mappedBy: 'forum', orphanRemoval: true)]
-	private Collection $topics;
-
 	public function __construct()
 	{
 		$this->children = new ArrayCollection();
 		$this->moderators = new ArrayCollection();
 		$this->forumPermissions = new ArrayCollection();
-		$this->topics = new ArrayCollection();
 	}
 
 	public function getId(): ?int
@@ -219,32 +212,6 @@ class Forum
 			}
 		}
 		return null;
-	}
-
-	public function getTopics(): Collection
-	{
-		return $this->topics;
-	}
-
-	public function addTopic(Topic $topic): static
-	{
-		if (!$this->topics->contains($topic)) {
-			$this->topics->add($topic);
-			$topic->setForum($this);
-		}
-
-		return $this;
-	}
-
-	public function removeTopic(Topic $topic): static
-	{
-		if ($this->topics->removeElement($topic)) {
-			if ($topic->getForum() === $this) {
-				$topic->setForum(null);
-			}
-		}
-
-		return $this;
 	}
 
 	public function getSlug(): string
